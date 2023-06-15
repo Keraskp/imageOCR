@@ -20,35 +20,42 @@ import java.io.IOException;
 @Controller
 public class FileController {
 	@PostMapping("/image-to-text")
-	public ResponseEntity<InputStreamResource> convertImageToText(@RequestParam("imageFile") MultipartFile imageFile) {
-		ByteArrayInputStream bis;
-		if (imageFile.isEmpty()) {
-			bis = new ByteArrayInputStream("Image File is Required".getBytes());
-			return ResponseEntity.badRequest().body(new InputStreamResource(bis));
+	public ResponseEntity<InputStreamResource> imageOcrApi(@RequestParam("image") MultipartFile image) {
+		ByteArrayInputStream payload;
+		if (image.isEmpty()) {
+			payload = new ByteArrayInputStream("Image File is Required".getBytes());
+			return ResponseEntity.badRequest().body(new InputStreamResource(payload));
 		}
 		try {
-			byte[] imageBytes = imageFile.getBytes();
-			String text = performImageToTextConversion(imageBytes);
-			byte[] byteData = text.getBytes();
-			bis = new ByteArrayInputStream(byteData);
+			byte[] imageBytes = image.getBytes();
+			String extractedtext = imageToText(imageBytes);
+			byte[] byteData = extractedtext.getBytes();
+			payload = new ByteArrayInputStream(byteData);
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.TEXT_PLAIN);
 			headers.setContentDispositionFormData("attachment", "report.txt");
-			return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bis));
+
+			return ResponseEntity.ok().headers(headers).body(new InputStreamResource(payload));
+
 		} catch (IOException e) {
 			e.printStackTrace();
-			bis = new ByteArrayInputStream("Error processing image file.".getBytes());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(bis));
+			payload = new ByteArrayInputStream("Error processing image file.".getBytes());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(payload));
 		}
 	}
 
-	private String performImageToTextConversion(byte[] imageBytes) {
+	private String imageToText(byte[] imageBytes) {
+		String tesseractModel = "small";
 		Tesseract tesseract = new Tesseract();
 		tesseract.setVariable("user_defined_dpi", "300");
 		tesseract.setLanguage("eng");
 		tesseract.setPageSegMode(1);
-		tesseract.setOcrEngineMode(1);
-		tesseract.setDatapath("./tessdata/tessdata_best/");
+		tesseract.setDatapath(String.format("./tessdata/tessdata_%s/", tesseractModel));
+		if (tesseractModel.equals("combined"))
+			tesseract.setOcrEngineMode(2);
+		else
+			tesseract.setOcrEngineMode(1);
 
 		try {
 			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageBytes));
