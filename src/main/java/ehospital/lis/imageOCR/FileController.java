@@ -46,7 +46,7 @@ public class FileController {
 	}
 
 	private String imageToText(byte[] imageBytes) {
-		String tesseractModel = "small";
+		String tesseractModel = "combined";
 		Tesseract tesseract = new Tesseract();
 		tesseract.setVariable("user_defined_dpi", "300");
 		tesseract.setLanguage("eng");
