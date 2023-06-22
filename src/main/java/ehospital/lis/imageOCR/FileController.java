@@ -53,7 +53,7 @@ public class FileController {
 
 
 	@PostMapping("/image-to-text")
-	public ResponseEntity<InputStreamResource> imageOcrApi(@RequestParam("image") MultipartFile image) {
+	public ResponseEntity<InputStreamResource> textOcrApi(@RequestParam("image") MultipartFile image) {
 		ByteArrayInputStream payload;
 		if (image.isEmpty()) {
 			payload = new ByteArrayInputStream("Image File is Required".getBytes());
