@@ -14,6 +14,13 @@ Request Parameters:
 |-------------|:--------------:|-------------------------------:|
 |    image    |  report.jpg    | The image file to be processed |
 
+
+**Sample Image:**
+
+<center>
+<img src="sample/input/report.jpg" alt= “screenshot.png” width="50%">
+</center>
+
 Reponse:
 
 The API responds with a JSON file containing the extracted text in key-value pairs.
