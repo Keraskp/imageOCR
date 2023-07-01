@@ -1,19 +1,48 @@
 # eHospital LIS Image OCR API
 The eHospital LIS Image OCR API is a web service that allows you to extract text from images and convert it into JSON or plain text formats. This API utilizes the Tesseract OCR engine to perform optical character recognition on the provided image file.
 
-## Endpoints
-#### Image to Json
+## Build and Run
+
+To build and run the Lab Report OCR API, follow these steps:
+
+1. Clone the repository from GitHub:
+   
+   `git clone https://github.com/keraskp/imageOCR.git`
+   
+2. Navigate to the project directory:
+   
+   `cd imageOCR`
+   
+3. Build the project using Maven:
+   
+   `mvn clean package`
+   
+4. Run the application:
+   
+   `java -jar target/imageOCR.jar`
+   
+
+The API will be accessible at `http://localhost:8080`.
+
+## Usage
+### Image to Json
 **Endpoint:** `/image-to-json`
 
 **Method:** POST
 
 **Description:** Extracts text from the uploaded image file and converts it into JSON format.
 
-Request Parameters:
+**Request Parameters:**
+
 | Parameter   |      Type      |           Description          |
 |-------------|:--------------:|-------------------------------:|
 |    image    |  report.jpg    | The image file to be processed |
 
+<center>
+<img src="./sample/input/postman-header.png" alt="postman-header">
+</center>
+
+<br>
 
 **Sample Image:**
 
@@ -21,9 +50,12 @@ Request Parameters:
 <img src="sample/input/report.jpg" alt= “screenshot.png” width="50%">
 </center>
 
-Reponse:
+**Success Response:**
 
-The API responds with a JSON file containing the extracted text in key-value pairs.
+- *Status Code:* 200 OK
+- *Content Type:* application/json
+- *Body:* 
+
 ```json
 {
     "": "150Year(s) (Male",
@@ -49,7 +81,23 @@ The API responds with a JSON file containing the extracted text in key-value pai
 }
 ```
 
-#### Image to Text
+
+**Failure Response:**
+
+1. No file provided
+- *Status Code:* 400 Bad Request
+- *Body:* `Image File is Required`
+
+2. Non-image file provided
+- *Status Code:* 400 Bad Request
+- *Body:* `Error! provide proper image file`
+
+3. Issue with image to text conversion
+- *Status Code:* 500 Internal Server Error
+- *Body:* `Error extracting text from image`
+
+
+### Image to Text
 **Endpoint:** `/image-to-text`
 
 **Method:** POST
@@ -61,9 +109,12 @@ Request Parameters:
 |-------------|:--------------:|-------------------------------:|
 |    image    |  report.jpg    | The image file to be processed |
 
-Reponse:
+**Success Response:**
 
-The API responds with a plain text file containing the extracted text.
+- *Status Code:* 200 OK
+- *Content Type:* application/json
+- *Body:* 
+
 ```text
 g;la Government Medical College & Gobind Ballay Pant Hospital
 Government of Tripura Agartala, Tripura West 799006
@@ -117,13 +168,23 @@ Page 1 of |
 ```
 
 
-## Error Handling
+**Failure Response:**
 
-If any error occurs during the processing of the image, the API will respond with an appropriate error message.
+1. No file provided
+- *Status Code:* 400 Bad Request
+- *Body:* `Image File is Required`
 
-- If the image file is not provided or empty, a 400 Bad Request response is returned with the error message "No file provided".
-- If the image file is not in a proper format or cannot be processed, a 400 Bad Request response is returned with the error message "Error! provide proper image file".
-- If any other error occurs during the OCR process, a 500 Internal Server Error response is returned with the stack trace of the exception.
+2. Non-image file provided
+- *Status Code:* 400 Bad Request
+- *Body:* `Error! provide proper image file`
+
+3. Issue with image to text conversion
+- *Status Code:* 500 Internal Server Error
+- *Body:* `Error extracting text from image`
+
+
+
+
 
 
 ## Libraries and Tools Used
@@ -134,19 +195,13 @@ The following libraries and tools are used in this API:
 
 
 
-## Setup and Configuration
-
-To setup up the API locally, follow these steps
-1. Clone the repository.
-2. Build the project using a Java build tool such as Maven or Gradle.
-3. Run the application on a web server.
 
 
 ## Dependencies
 The following dependencies are required to run the API:
-- Tesseract OCR engine (with language data files)
-- Java 8 or higher
-- Spring Framework (version specified in project configuration)
+- Tesseract OCR engine (provided in this project)
+- Java 20 or higher
+- Spring Framework 3.1.0
 
 
 ## License
@@ -154,5 +209,5 @@ This API is open source and licensed under the MIT License.
 
 
 ## Contributions
-Contributions to this project are welcome. If you encounter any issues or have suggestions for improvements, please open an issue or submit a pull request on the project's repository.
+Contributions to this project are welcome. If you encounter any issues or have suggestions for improvements, please open an issue or submit a pull request on the project's repository or mail me at suggi.aditya@gmail.com
 
