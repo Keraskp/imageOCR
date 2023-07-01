@@ -24,55 +24,43 @@ import java.util.regex.Pattern;
 public class FileController {
 
 	@PostMapping("/image-to-json")
-	public ResponseEntity<InputStreamResource> imageToJsonAPI(@RequestParam("image") MultipartFile image) {
+	public ResponseEntity<InputStreamResource> imageToJsonAPI(@RequestParam("image") MultipartFile image) throws IOException {
 		ByteArrayInputStream payload;
 		if (image.isEmpty()) {
 			payload = new ByteArrayInputStream("Image File is Required".getBytes());
 			return ResponseEntity.badRequest().body(new InputStreamResource(payload));
 		}
-
-		try {
-			byte[] imageBytes = image.getBytes();
-			String extractedText = imageToText(imageBytes);
-			String json = textToJson(extractedText);
-			return createResponse(json, "report.json", MediaType.APPLICATION_JSON);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			payload = new ByteArrayInputStream("Error processing image file.".getBytes());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(payload));
-		}
+		byte[] imageBytes = image.getBytes();
+		String extractedText = imageToText(imageBytes);
+		extractedText = (extractedText != null)? textToJson(extractedText): extractedText;
+		return createResponse(extractedText, image.getOriginalFilename().split("[.]")[0] + ".json" , MediaType.APPLICATION_JSON);
 	}
 
 	@PostMapping("/image-to-text")
-	public ResponseEntity<InputStreamResource> imageToTextAPI(@RequestParam("image") MultipartFile image) {
+	public ResponseEntity<InputStreamResource> imageToTextAPI(@RequestParam("image") MultipartFile image) throws IOException {
 		ByteArrayInputStream payload;
 		if (image.isEmpty()) {
-			payload = new ByteArrayInputStream("Image File is Required".getBytes());
+			payload = new ByteArrayInputStream("No file provided".getBytes());
 			return ResponseEntity.badRequest().body(new InputStreamResource(payload));
 		}
-
-		try {
-			byte[] imageBytes = image.getBytes();
-			String extractedText = imageToText(imageBytes);
-			return createResponse(extractedText, "report.txt", MediaType.TEXT_PLAIN);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			payload = new ByteArrayInputStream("Error processing image file.".getBytes());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(payload));
-		}
+		byte[] imageBytes = image.getBytes();
+		String extractedText = imageToText(imageBytes);
+		return createResponse(extractedText, image.getOriginalFilename().split("[.]")[0] + ".txt", MediaType.TEXT_PLAIN);
 	}
 
 	private ResponseEntity<InputStreamResource> createResponse(String text, String filename, MediaType mediaType) {
+		if (text == null) {
+			ByteArrayInputStream payload = new ByteArrayInputStream("Error! provide proper image file".getBytes());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new InputStreamResource(payload));
+		}
+
 		byte[] byteData = text.getBytes();
 		ByteArrayInputStream payload = new ByteArrayInputStream(byteData);
-
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
 		headers.setContentDispositionFormData("attachment", filename);
 
-		return ResponseEntity.ok().headers(headers).body(new InputStreamResource(payload));
+		return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new InputStreamResource(payload));
 	}
 
 	private String imageToText(byte[] imageBytes) {
@@ -93,7 +81,7 @@ public class FileController {
 			return tesseract.doOCR(image);
 		} catch (IOException | TesseractException e) {
 			e.printStackTrace();
-			return "Error extracting text from the image.";
+			return null;
 		}
 	}
 
