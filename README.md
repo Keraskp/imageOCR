@@ -1,7 +1,7 @@
 # eHospital LIS Image OCR API
 The eHospital LIS Image OCR API is a web service that allows you to extract text from images and convert it into JSON or plain text formats. This API utilizes the Tesseract OCR engine to perform optical character recognition on the provided image file.
 
-### Endpoints
+## Endpoints
 #### Image to Json
 **Endpoint:** `/image-to-json`
 
@@ -110,7 +110,7 @@ Page 1 of |
 ```
 
 
-### Error Handling
+## Error Handling
 
 If any error occurs during the processing of the image, the API will respond with an appropriate error message.
 
@@ -119,7 +119,7 @@ If any error occurs during the processing of the image, the API will respond wit
 - If any other error occurs during the OCR process, a 500 Internal Server Error response is returned with the stack trace of the exception.
 
 
-### Libraries and Tools Used
+## Libraries and Tools Used
 
 The following libraries and tools are used in this API:
 - Tess4J: A Java wrapper for Tesseract OCR engine.
@@ -127,7 +127,7 @@ The following libraries and tools are used in this API:
 
 
 
-### Setup and Configuration
+## Setup and Configuration
 
 To setup up the API locally, follow these steps
 1. Clone the repository.
@@ -135,17 +135,17 @@ To setup up the API locally, follow these steps
 3. Run the application on a web server.
 
 
-### Dependencies
+## Dependencies
 The following dependencies are required to run the API:
 - Tesseract OCR engine (with language data files)
 - Java 8 or higher
 - Spring Framework (version specified in project configuration)
 
 
-### License
+## License
 This API is open source and licensed under the MIT License.
 
 
-### Contributions
+## Contributions
 Contributions to this project are welcome. If you encounter any issues or have suggestions for improvements, please open an issue or submit a pull request on the project's repository.
 
