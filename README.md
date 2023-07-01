@@ -39,7 +39,7 @@ The API will be accessible at `http://localhost:8080`.
 |    image    |  report.jpg    | The image file to be processed |
 
 <center>
-<img src="./sample/input/postman-header.png" alt="postman-header">
+<img src="./assets/images/postman-header.png" alt="postman-header">
 </center>
 
 <br>
@@ -184,24 +184,17 @@ Page 1 of |
 
 
 
-
-
-
 ## Libraries and Tools Used
 
 The following libraries and tools are used in this API:
-- Tess4J: A Java wrapper for Tesseract OCR engine.
-- Spring Framework: A popular Java framework for building web applications.
-
-
-
-
+- Language : <img src="./assets/images/icons8-java-48.png" height=25> Java (JDK 20) 
+- Framework: <img src="./assets/images/icons8-spring-boot-48.png" height=25> SpringBoot (3.1.0) 
 
 ## Dependencies
-The following dependencies are required to run the API:
-- Tesseract OCR engine (provided in this project)
-- Java 20 or higher
-- Spring Framework 3.1.0
+Maven Dependencies used:
+- tess4j: The library provides optical character recognition (OCR) support for: TIFF, JPEG, GIF, PNG, and BM(provided in this project)
+- org.json: JSON is a light-weight, language independent, data interchange format
+- spring-boot-starter-web: Starter for building web, including RESTful, applications using Spring MVC. Uses Tomcat as the default embedded container
 
 
 ## License
