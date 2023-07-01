@@ -24,58 +24,55 @@ import java.util.regex.Pattern;
 public class FileController {
 
 	@PostMapping("/image-to-json")
-	public ResponseEntity<InputStreamResource> jsonOcrApi(@RequestParam("image") MultipartFile image) {
+	public ResponseEntity<InputStreamResource> imageToJsonAPI(@RequestParam("image") MultipartFile image) {
 		ByteArrayInputStream payload;
 		if (image.isEmpty()) {
 			payload = new ByteArrayInputStream("Image File is Required".getBytes());
 			return ResponseEntity.badRequest().body(new InputStreamResource(payload));
 		}
+
 		try {
 			byte[] imageBytes = image.getBytes();
-			String extractedtext = imageToText(imageBytes);
-			extractedtext = textToJson(extractedtext);
-			byte[] byteData = extractedtext.getBytes();
-			payload = new ByteArrayInputStream(byteData);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.setContentDispositionFormData("attachment", "report.json");
-
-			return ResponseEntity.ok().headers(headers).body(new InputStreamResource(payload));
+			String extractedText = imageToText(imageBytes);
+			String json = textToJson(extractedText);
+			return createResponse(json, "report.json", MediaType.APPLICATION_JSON);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			payload = new ByteArrayInputStream("Error processing image file.".getBytes());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(payload));
 		}
-
 	}
 
-
 	@PostMapping("/image-to-text")
-	public ResponseEntity<InputStreamResource> textOcrApi(@RequestParam("image") MultipartFile image) {
+	public ResponseEntity<InputStreamResource> imageToTextAPI(@RequestParam("image") MultipartFile image) {
 		ByteArrayInputStream payload;
 		if (image.isEmpty()) {
 			payload = new ByteArrayInputStream("Image File is Required".getBytes());
 			return ResponseEntity.badRequest().body(new InputStreamResource(payload));
 		}
+
 		try {
 			byte[] imageBytes = image.getBytes();
-			String extractedtext = imageToText(imageBytes);
-			byte[] byteData = extractedtext.getBytes();
-			payload = new ByteArrayInputStream(byteData);
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.TEXT_PLAIN);
-			headers.setContentDispositionFormData("attachment", "report.txt");
-
-			return ResponseEntity.ok().headers(headers).body(new InputStreamResource(payload));
+			String extractedText = imageToText(imageBytes);
+			return createResponse(extractedText, "report.txt", MediaType.TEXT_PLAIN);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			payload = new ByteArrayInputStream("Error processing image file.".getBytes());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(payload));
 		}
+	}
+
+	private ResponseEntity<InputStreamResource> createResponse(String text, String filename, MediaType mediaType) {
+		byte[] byteData = text.getBytes();
+		ByteArrayInputStream payload = new ByteArrayInputStream(byteData);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(mediaType);
+		headers.setContentDispositionFormData("attachment", filename);
+
+		return ResponseEntity.ok().headers(headers).body(new InputStreamResource(payload));
 	}
 
 	private String imageToText(byte[] imageBytes) {
@@ -85,10 +82,11 @@ public class FileController {
 		tesseract.setLanguage("eng");
 		tesseract.setPageSegMode(1);
 		tesseract.setDatapath(String.format("./tessdata/tessdata_%s/", tesseractModel));
-		if (tesseractModel.equals("combined"))
+		if (tesseractModel.equals("combined")) {
 			tesseract.setOcrEngineMode(2);
-		else
+		} else {
 			tesseract.setOcrEngineMode(1);
+		}
 
 		try {
 			BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageBytes));
@@ -99,11 +97,11 @@ public class FileController {
 		}
 	}
 
-	public String textToJson(String text){
+	private String textToJson(String text) {
 		JSONObject object = new JSONObject();
-		String [] lines = text.split("\\R");
+		String[] lines = text.split("\\R");
 		Pattern pattern = Pattern.compile("\\b[0-9].*\\b");
-		for(String line : lines){
+		for (String line : lines) {
 			Matcher matcher = pattern.matcher(line);
 			if (matcher.find()) {
 				int idx = matcher.start();
