@@ -1,6 +1,6 @@
 FROM ubuntu:latest AS build
 RUN apt-get update
-RUN apt-get install -y libtesseract-dev libleptonica-dev tesseract-ocr-eng
+RUN apt-get install -y libtesseract-dev libleptonica-dev tesseract-ocr
 RUN apt-get install openjdk-17-jdk -y
 
 WORKDIR /build
