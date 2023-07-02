@@ -187,8 +187,8 @@ Page 1 of |
 ## Libraries and Tools Used
 
 The following libraries and tools are used in this API:
-- Language : <img src="./assets/images/icons8-java-48.png" height=25> Java (JDK 20) 
-- Framework: <img src="./assets/images/icons8-spring-boot-48.png" height=25> SpringBoot (3.1.0) 
+- Language : <img src="./assets/images/icons8-java-48.png" height=25> Java (JDK 17) 
+- Framework: <img src="./assets/images/icons8-spring-boot-48.png" height=25> SpringBoot (3.0.8) 
 
 ## Dependencies
 Maven Dependencies used:

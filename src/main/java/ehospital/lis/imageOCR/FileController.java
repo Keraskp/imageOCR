@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 @Controller
 public class FileController {
-	@GetMapping("/")
+	@GetMapping("/hello")
 	public String Greetings(){
 		return "Hello from API";
 	}
